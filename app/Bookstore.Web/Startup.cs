@@ -24,7 +24,8 @@ namespace Bookstore.Web
 
         public void Configure(IApplicationBuilder app)
         {
-            AuthenticationConfig.ConfigureAuthentication(app);
+            app.UseAuthentication();
+            app.UseAuthorization();
         }
     }
 }
