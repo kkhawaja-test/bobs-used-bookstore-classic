@@ -15,11 +15,9 @@ namespace Bookstore.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            LoggingSetup.ConfigureLogging();
-
-            ConfigurationSetup.ConfigureConfiguration();
-
-            DependencyInjectionSetup.ConfigureDependencyInjection(services);
+            // TODO: Configure logging
+            // TODO: Configure application settings
+            // TODO: Configure dependency injection
 
             services.AddAuthentication(); // Placeholder for authentication configuration
         }
