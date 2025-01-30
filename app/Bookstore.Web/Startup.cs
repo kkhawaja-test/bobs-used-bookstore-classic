@@ -1,60 +1,30 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Bookstore.Web
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _logger = logger;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Use the injected ILogger instead of LoggingSetup
-            _logger.LogInformation("Configuring services");
+            LoggingSetup.ConfigureLogging();
 
-            // TODO: Implement configuration setup
-            // ConfigurationSetup.ConfigureConfiguration();
+            ConfigurationSetup.ConfigureConfiguration();
 
-            // TODO: Implement dependency injection setup
-            // DependencyInjectionSetup.ConfigureDependencyInjection(services);
-
-            services.AddMvc();
+            DependencyInjectionSetup.ConfigureDependencyInjection(services);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-
-            // TODO: Implement authentication configuration
-            // AuthenticationConfig.ConfigureAuthentication(app);
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            AuthenticationConfig.ConfigureAuthentication(app);
         }
     }
 }
