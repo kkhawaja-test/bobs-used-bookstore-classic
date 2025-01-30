@@ -1,30 +1,60 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Bookstore.Web
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            LoggingSetup.ConfigureLogging();
+            // Use the injected ILogger instead of LoggingSetup
+            _logger.LogInformation("Configuring services");
 
-            ConfigurationSetup.ConfigureConfiguration();
+            // TODO: Implement configuration setup
+            // ConfigurationSetup.ConfigureConfiguration();
 
-            DependencyInjectionSetup.ConfigureDependencyInjection(services);
+            // TODO: Implement dependency injection setup
+            // DependencyInjectionSetup.ConfigureDependencyInjection(services);
+
+            services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            AuthenticationConfig.ConfigureAuthentication(app);
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            // TODO: Implement authentication configuration
+            // AuthenticationConfig.ConfigureAuthentication(app);
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
