@@ -1,26 +1,55 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Bookstore.Web
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
         {
-            // Configure services here
+            Configuration = configuration;
         }
 
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
-            LoggingSetup.ConfigureLogging();
+            services.AddControllers();
+            // Add other services here
+        }
 
-            ConfigurationSetup.ConfigureConfiguration();
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
-            // Update these methods to work with IApplicationBuilder instead of IAppBuilder
-            DependencyInjectionSetup.ConfigureDependencyInjection(app);
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
 
-            AuthenticationConfig.ConfigureAuthentication(app);
+            // Configure logging
+            loggerFactory.AddConfiguration(Configuration.GetSection("Logging"));
+
+            // Configure authentication
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
