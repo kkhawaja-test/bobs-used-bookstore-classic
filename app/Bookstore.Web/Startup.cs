@@ -1,21 +1,29 @@
-using Microsoft.AspNetCore.Owin;
-
-
-[assembly: OwinStartup(typeof(Bookstore.Web.Startup))]
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Bookstore.Web
 {
     public class Startup
     {
-        public void Configuration(IAppBuilder app)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             LoggingSetup.ConfigureLogging();
 
             ConfigurationSetup.ConfigureConfiguration();
 
-            DependencyInjectionSetup.ConfigureDependencyInjection(app);
+            // Note: DependencyInjection setup should be moved to ConfigureServices method
 
-            AuthenticationConfig.ConfigureAuthentication(app);
+            // Note: Authentication config should be updated to use ASP.NET Core Identity
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Move dependency injection setup here
+            // DependencyInjectionSetup.ConfigureDependencyInjection(services);
+
+            // Configure authentication here
+            // services.AddAuthentication(...);
         }
     }
 }
