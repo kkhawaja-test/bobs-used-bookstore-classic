@@ -55,9 +55,9 @@ namespace Bookstore.Web.Areas.Admin.Controllers
                 model.Year, 
                 model.ISBN, 
                 model.Summary, 
-                model.Price, 
-                model.Quantity, 
-                model.CoverImage?.InputStream, 
+                model.Price,
+                model.Quantity,
+                model.CoverImage?.OpenReadStream(),
                 model.CoverImage?.FileName);
 
             var result = await bookService.AddAsync(dto);
@@ -91,7 +91,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
                 model.Summary,
                 model.Price,
                 model.Quantity,
-                model.CoverImage?.InputStream,
+                model.CoverImage?.OpenReadStream(),
                 model.CoverImage?.FileName);
 
             var result = await bookService.UpdateAsync(dto);
