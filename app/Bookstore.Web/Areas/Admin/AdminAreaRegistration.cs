@@ -1,24 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
 namespace Bookstore.Web.Areas
 {
-    public class AdminAreaRegistration : AreaRegistration 
+    public class AdminAreaRegistration : IAreaRegistration
     {
-        public override string AreaName 
-        {
-            get 
-            {
-                return "Admin";
-            }
-        }
+        public string AreaName => "Admin";
 
-        public override void RegisterArea(AreaRegistrationContext context) 
+        public void RegisterArea(IEndpointRouteBuilder endpoints)
         {
-            context.MapRoute(
-                "Admin_default",
-                "Admin/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }, namespaces: new[] { "Bookstore.Web.Areas.Admin.Controllers" }
+            endpoints.MapAreaControllerRoute(
+                name: "Admin_default",
+                areaName: "Admin",
+                pattern: "Admin/{controller=Home}/{action=Index}/{id?}",
+                defaults: new { area = "Admin" }
             );
         }
     }
