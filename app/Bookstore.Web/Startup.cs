@@ -1,29 +1,49 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Bookstore.Web
 {
     public class Startup
     {
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
         {
-            LoggingSetup.ConfigureLogging();
-
-            ConfigurationSetup.ConfigureConfiguration();
-
-            // Note: DependencyInjection setup should be moved to ConfigureServices method
-
-            // Note: Authentication config should be updated to use ASP.NET Core Identity
+            Configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Move dependency injection setup here
-            // DependencyInjectionSetup.ConfigureDependencyInjection(services);
-
-            // Configure authentication here
+            services.AddControllers();
+            // Add other services as needed
             // services.AddAuthentication(...);
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                // Add other endpoint mappings as needed
+            });
         }
     }
 }
