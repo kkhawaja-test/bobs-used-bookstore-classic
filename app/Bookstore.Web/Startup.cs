@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Bookstore.Web
 {
@@ -8,17 +9,40 @@ namespace Bookstore.Web
     {
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            LoggingSetup.ConfigureLogging();
+            var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<Startup>();
+            logger.LogInformation("Application starting up.");
 
-            ConfigurationSetup.ConfigureConfiguration();
+            // ConfigurationSetup.ConfigureConfiguration();
 
-            // Note: DependencyInjection setup should be moved to ConfigureServices method
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
-            // Note: Authentication config should be updated to use ASP.NET Core Identity
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+            services.AddLogging();
+
             // Move dependency injection setup here
             // DependencyInjectionSetup.ConfigureDependencyInjection(services);
 
