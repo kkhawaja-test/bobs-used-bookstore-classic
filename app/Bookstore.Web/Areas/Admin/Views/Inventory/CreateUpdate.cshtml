@@ -1,4 +1,4 @@
-﻿@using Bookstore.Domain.ReferenceData
+@using Bookstore.Domain.ReferenceData
 
 @model Bookstore.Web.Areas.Admin.Models.Inventory.InventoryCreateUpdateViewModel
 
@@ -41,7 +41,7 @@
                 <div class="col">
                     <label class="form-label" for="QuantityInput">Quantity</label>
                     @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control", @id = "QuantityInput", placeholder = "Quantity", @type = "number" })
-                    <small>@Html.ValidationMessageFor(x => x.Price, null, new { @class = "text-danger" })</small>
+                    <small>@Html.ValidationMessageFor(x => x.Quantity, null, new { @class = "text-danger" })</small>
                 </div>
             </div>
 
@@ -138,5 +138,5 @@
         }
     </script>
 
-    @{Html.RenderPartial("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
