@@ -1,4 +1,4 @@
-﻿@using Bookstore.Domain.ReferenceData
+@using Bookstore.Domain.ReferenceData
 @using Bookstore.Web.Helpers
 
 @model Bookstore.Web.Areas.Admin.Models.ReferenceData.ReferenceDataIndexViewModel
@@ -21,7 +21,8 @@
                 <label class="visually-hidden" for="referenceDataTypeSelect">Reference data type</label>
 
 
-                @Html.EnumDropDownListFor(a => a.Filters.ReferenceDataType, "All Reference Data Types", new { @class = "form-select" })
+                @* TODO: Html.EnumDropDownListFor() is not supported in ASP.NET Core. Instead, use the Html.DropDownListFor() method. *@
+                @*@Html.EnumDropDownListFor(a => a.Filters.ReferenceDataType, "All Reference Data Types", new { @class = "form-select" })*@
 
 
 
@@ -43,7 +44,7 @@
 <div class="card m-3">
     <div class="card-header">
         <div class="d-flex justify-content-end">
-            @Html.Partial("_Paginator")
+            @await Html.PartialAsync("_Paginator")
         </div>
     </div>
 
@@ -84,7 +85,7 @@
 
     <div class="card-footer">
         <div class="d-flex justify-content-end">
-            @Html.Partial("_Paginator")
+            @await Html.PartialAsync("_Paginator")
         </div>
     </div>
 </div>
