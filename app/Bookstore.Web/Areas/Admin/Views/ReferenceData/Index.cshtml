@@ -1,5 +1,6 @@
-﻿@using Bookstore.Domain.ReferenceData
+@using Bookstore.Domain.ReferenceData
 @using Bookstore.Web.Helpers
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @model Bookstore.Web.Areas.Admin.Models.ReferenceData.ReferenceDataIndexViewModel
 
@@ -21,7 +22,7 @@
                 <label class="visually-hidden" for="referenceDataTypeSelect">Reference data type</label>
 
 
-                @Html.EnumDropDownListFor(a => a.Filters.ReferenceDataType, "All Reference Data Types", new { @class = "form-select" })
+                @Html.DropDownListFor(a => a.Filters.ReferenceDataType, Html.GetEnumSelectList<ReferenceDataType>(), "All Reference Data Types", new { @class = "form-select" })
 
 
 
