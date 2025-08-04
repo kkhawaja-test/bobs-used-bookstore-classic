@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0CC99FE5-F722-499A-BE66-3B199A2266D5}</ProjectGuid>
+    <ProjectGuid>{474FE3EE-7528-40A0-A0C8-C637D3370BE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Bookstore.Web</RootNamespace>
     <AssemblyName>Bookstore.Web</AssemblyName>

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FDB95920-528A-4CCF-B7F4-3A006B6896E5}</ProjectGuid>
+    <ProjectGuid>{EBA3961E-29BB-4841-B7AF-D5DC556AA3ED}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Bookstore.Common</RootNamespace>
     <AssemblyName>Bookstore.Common</AssemblyName>
