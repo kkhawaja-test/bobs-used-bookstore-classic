@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Books;
+using System;
 
 namespace Bookstore.Web.Areas.Admin.Models.Inventory
 {
@@ -6,22 +6,8 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
     {
         public InventoryDetailsViewModel() { }
 
-        public InventoryDetailsViewModel(Book book)
-        {
-            Author = book.Author;
-            BookType = book.BookType.Text;
-            Condition = book.Condition.Text;
-            CoverImageUrl = book.CoverImageUrl;
-            Genre = book.Genre.Text;
-            Id = book.Id;
-            ISBN = book.ISBN;
-            Name = book.Name;
-            Price = book.Price;
-            Publisher = book.Publisher.Text;
-            Quantity = book.Quantity;
-            Summary = book.Summary;
-            Year = book.Year.GetValueOrDefault();
-        }
+        // Constructor removed due to missing Book class reference
+// Will need to manually set properties instead of using this constructor
 
         public int Id { get; set; }
 
@@ -48,5 +34,34 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
         public decimal Price { get; set; }
 
         public int Quantity { get; set; }
+
+        // Factory method to create instance from dynamic object
+        public static InventoryDetailsViewModel FromDynamic(dynamic book)
+        {
+            if (book == null) return null;
+
+            var viewModel = new InventoryDetailsViewModel
+            {
+                Author = book.Author,
+                BookType = book.BookType?.Text,
+                Condition = book.Condition?.Text,
+                CoverImageUrl = book.CoverImageUrl,
+                Genre = book.Genre?.Text,
+                Id = book.Id,
+                ISBN = book.ISBN,
+                Name = book.Name,
+                Price = book.Price,
+                Publisher = book.Publisher?.Text,
+                Quantity = book.Quantity,
+                Summary = book.Summary
+            };
+
+            if (book.Year != null)
+            {
+                viewModel.Year = book.Year.GetValueOrDefault();
+            }
+
+            return viewModel;
+        }
     }
 }

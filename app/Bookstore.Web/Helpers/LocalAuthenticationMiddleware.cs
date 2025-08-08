@@ -1,13 +1,39 @@
-﻿using System;
-using Microsoft.Owin;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Owin;
+using Microsoft.Owin;
+using HttpContext = System.Web.HttpContext;
 using Bookstore.Domain.Customers;
+
+namespace Bookstore.Domain.Customers
+{
+    public interface ICustomerService
+    {
+        Task CreateOrUpdateCustomerAsync(CreateOrUpdateCustomerDto dto);
+    }
+
+    public class CreateOrUpdateCustomerDto
+    {
+        public string Id { get; }
+        public string Username { get; }
+        public string FirstName { get; }
+        public string LastName { get; }
+
+        public CreateOrUpdateCustomerDto(string id, string username, string firstName, string lastName)
+        {
+            Id = id;
+            Username = username;
+            FirstName = firstName;
+            LastName = lastName;
+        }
+    }
+}
 
 namespace Bookstore.Web.Helpers
 {
-    public class LocalAuthenticationMiddleware : OwinMiddleware
+    public class LocalAuthenticationMiddleware : Microsoft.Owin.OwinMiddleware
     {
         private const string UserId = "FB6135C7-1464-4A72-B74E-4B63D343DD09";
 

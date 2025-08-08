@@ -6,7 +6,6 @@ using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.S3;
 using Amazon.CDK.AWS.SSM;
 using Amazon.CDK.CustomResources;
-using Bookstore.Common;
 using Constructs;
 
 namespace Bookstore.Cdk;

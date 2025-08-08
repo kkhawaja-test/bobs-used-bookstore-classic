@@ -1,10 +1,32 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Orders;
-using Bookstore.Domain.Orders;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
+
+    // Define the interfaces needed from Bookstore.Domain.Orders
+    public interface IOrderService
+    {
+        Task<Models.Orders.IPaginatedList<Models.Orders.Order>> GetOrdersAsync(Models.Orders.OrderFilters filters, int pageIndex, int pageSize);
+        Task<object> GetOrderAsync(int id);
+        Task UpdateOrderStatusAsync(UpdateOrderStatusDto dto);
+    }
+
+    public class UpdateOrderStatusDto
+    {
+        public int OrderId { get; }
+        public Models.Orders.OrderStatus SelectedOrderStatus { get; }
+
+        public UpdateOrderStatusDto(int orderId, Models.Orders.OrderStatus selectedOrderStatus)
+        {
+            OrderId = orderId;
+            SelectedOrderStatus = selectedOrderStatus;
+        }
+    }
+
     public class OrdersController : AdminAreaControllerBase
     {
         private readonly IOrderService orderService;
@@ -14,7 +36,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             this.orderService = orderService;
         }
 
-        public async Task<ActionResult> Index(OrderFilters filters, int pageIndex = 1, int pageSize = 10)
+        public async Task<ActionResult> Index(Models.Orders.OrderFilters filters, int pageIndex = 1, int pageSize = 10)
         {
             var orders = await orderService.GetOrdersAsync(filters, pageIndex, pageSize);
 
@@ -25,7 +47,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
         {
             var order = await orderService.GetOrderAsync(id);
 
-            return View(new OrderDetailsViewModel(order));
+            return View(new OrderDetailsViewModel((Models.Orders.Order)order));
         }
 
         [HttpPost]

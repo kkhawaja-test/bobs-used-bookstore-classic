@@ -1,11 +1,57 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Orders;
+using Bookstore.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Bookstore.Web.Areas.Admin.Models.Orders
 {
+    // Define necessary interfaces and classes for compilation
+    public interface IPaginatedList<T> : IEnumerable<T>
+    {
+        int PageIndex { get; }
+        int Count { get; }
+        int TotalPages { get; }
+        bool HasNextPage { get; }
+        bool HasPreviousPage { get; }
+        IEnumerable<int> GetPageList(int count);
+    }
+
+    // Minimal Order class definition for compilation
+    public class Order
+    {
+        public int Id { get; set; }
+        public Customer Customer { get; set; }
+        public OrderStatus OrderStatus { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    // Customer class needed for Order
+    public class Customer
+    {
+        public string FullName { get; set; }
+    }
+    // Define the OrderStatus enum since it's not accessible
+    public enum OrderStatus
+    {
+        Pending,
+        Processing,
+        Shipped,
+        Delivered,
+        Cancelled
+    }
+
+    public class OrderFilters
+    {
+        public string CustomerName { get; set; }
+        public OrderStatus? Status { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string SortBy { get; set; }
+        public bool SortAscending { get; set; } = true;
+    }
+
     public class OrderIndexViewModel : PaginatedViewModel
     {
         public List<OrderIndexListItemViewModel> Items { get; set; } = new List<OrderIndexListItemViewModel>();

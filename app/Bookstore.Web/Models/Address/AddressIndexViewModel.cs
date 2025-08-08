@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using Bookstore.Domain;
 
 namespace Bookstore.Web.ViewModel.Address
 {
@@ -6,7 +7,7 @@ namespace Bookstore.Web.ViewModel.Address
     {
         public List<AddressIndexItemViewModel> Items { get; set; } = new List<AddressIndexItemViewModel>();
 
-        public AddressIndexViewModel(IEnumerable<Domain.Addresses.Address> addresses)
+        public AddressIndexViewModel(IEnumerable<dynamic> addresses)
         {
             foreach (var address in addresses)
             {

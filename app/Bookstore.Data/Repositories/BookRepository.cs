@@ -1,11 +1,103 @@
-﻿using Bookstore.Domain;
-using Bookstore.Domain.Books;
+using Bookstore.Domain;
+using Bookstore.Data.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+
+namespace Bookstore.Data
+{
+    public class Book : Bookstore.Domain.Entity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public string ISBN { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public string CoverImageUrl { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+        public int? BookTypeId { get; set; }
+        public int? ConditionId { get; set; }
+        public Genre Genre { get; set; }
+        public Publisher Publisher { get; set; }
+        public BookType BookType { get; set; }
+        public Condition Condition { get; set; }
+
+        public static int LowBookThreshold = 5;
+    }
+
+    public class Genre
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class Publisher
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class BookType
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class Condition
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class BookStatistics
+    {
+        public int LowStock { get; set; }
+        public int OutOfStock { get; set; }
+        public int StockTotal { get; set; }
+    }
+
+    public class BookFilters
+    {
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public int? ConditionId { get; set; }
+        public int? BookTypeId { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+        public bool LowStock { get; set; }
+    }
+}
+
+namespace Bookstore.Data.Interfaces
+{
+    public interface IPaginatedList<T>
+    {
+        int PageIndex { get; }
+        int PageSize { get; }
+        int TotalCount { get; }
+        int TotalPages { get; }
+        bool HasPreviousPage { get; }
+        bool HasNextPage { get; }
+        IEnumerable<T> Items { get; }
+        Task PopulateAsync();
+    }
+
+    public interface IBookRepository
+    {
+        Task<Book> GetAsync(int id);
+        Task<Bookstore.Data.Interfaces.IPaginatedList<Book>> ListAsync(BookFilters filters, int pageIndex, int pageSize);
+        Task<Bookstore.Data.Interfaces.IPaginatedList<Book>> ListAsync(string searchString, string sortBy, int pageIndex, int pageSize);
+        Task AddAsync(Book book);
+        Task UpdateAsync(Book book);
+        Task SaveChangesAsync();
+        Task<BookStatistics> GetStatisticsAsync();
+    }
+}
 
 namespace Bookstore.Data.Repositories
 {
@@ -28,7 +120,7 @@ namespace Bookstore.Data.Repositories
                 .SingleAsync(x => x.Id == id);
         }
 
-        async Task<IPaginatedList<Book>> IBookRepository.ListAsync(BookFilters filters, int pageIndex, int pageSize)
+        async Task<Bookstore.Data.Interfaces.IPaginatedList<Book>> IBookRepository.ListAsync(BookFilters filters, int pageIndex, int pageSize)
         {
             var query = dbContext.Book.AsQueryable();
 
@@ -77,10 +169,10 @@ namespace Bookstore.Data.Repositories
 
             await result.PopulateAsync();
 
-            return result;
+            return (Bookstore.Data.Interfaces.IPaginatedList<Book>)result;
         }
 
-        async Task<IPaginatedList<Book>> IBookRepository.ListAsync(string searchString, string sortBy, int pageIndex, int pageSize)
+        async Task<Bookstore.Data.Interfaces.IPaginatedList<Book>> IBookRepository.ListAsync(string searchString, string sortBy, int pageIndex, int pageSize)
         {
             var query = dbContext.Book.AsQueryable();
 
@@ -116,7 +208,7 @@ namespace Bookstore.Data.Repositories
 
             await result.PopulateAsync();
 
-            return result;
+            return (Bookstore.Data.Interfaces.IPaginatedList<Book>)result;
         }
 
         async Task IBookRepository.AddAsync(Book book)

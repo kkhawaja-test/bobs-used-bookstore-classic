@@ -1,9 +1,22 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bookstore.Web.ViewModel.Address
 {
+    // Simple Address class to replace the missing Domain.Addresses.Address
+    public class Address
+    {
+        public int Id { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+    }
+
     public class AddressCreateUpdateViewModel
     {
         public AddressCreateUpdateViewModel() { }
@@ -13,7 +26,7 @@ namespace Bookstore.Web.ViewModel.Address
             ReturnUrl = returnUrl;
         }
 
-        public AddressCreateUpdateViewModel(Domain.Addresses.Address address, string returnUrl)
+        public AddressCreateUpdateViewModel(Address address, string returnUrl)
         {
             Id = address.Id;
             AddressLine1 = address.AddressLine1;

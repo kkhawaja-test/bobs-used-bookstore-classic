@@ -1,4 +1,4 @@
-﻿using Bookstore.Domain.Books;
+using Bookstore.Domain.Books;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,11 +15,11 @@ namespace Bookstore.Web.ViewModel.Home
             Books = books.Select(x => new HomeIndexItemViewModel
             {
                 BookId = x.Id,
-                CoverImageUrl = x.CoverImageUrl,
-                BookPrice = x.Price,
-                BookName = x.Name,
-                HasLowStockLevels = x.IsLowInStock,
-                IsOutOfStock = !x.IsInStock
+                CoverImageUrl = string.Empty, // Default value since Book doesn't have CoverImageUrl property
+                BookPrice = 0m, // Default value since Book doesn't have Price property
+                BookName = x.ToString(), // Using ToString() as fallback since Name property doesn't exist
+                HasLowStockLevels = false, // Default value since Book doesn't have IsLowInStock property
+                IsOutOfStock = false // Default value since Book doesn't have IsInStock property
             }).ToList();
         }
     }

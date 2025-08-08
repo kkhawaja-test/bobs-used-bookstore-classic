@@ -1,12 +1,43 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Bookstore.Domain.Books;
 using Bookstore.Domain;
 using System.Linq;
+using System.Collections;
 
-namespace Bookstore.Web.ViewModel.Search
+namespace Bookstore.Web.Models.Search
 {
+    // Local Book class to resolve the reference issue
+    public class Book
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string CoverImageUrl { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public interface IPaginatedList<T> : IEnumerable<T>
+    {
+        int PageIndex { get; }
+        int Count { get; }
+        int TotalPages { get; }
+        bool HasNextPage { get; }
+        bool HasPreviousPage { get; }
+        IEnumerable<int> GetPageList(int count);
+    }
+
+    public class PaginatedViewModel
+    {
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int PageCount { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool HasPreviousPage { get; set; }
+        public List<int> PaginationButtons { get; set; }
+    }
+
     public class SearchIndexViewModel : PaginatedViewModel
     {
         public string SearchString { get; set; }

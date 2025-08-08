@@ -1,10 +1,27 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+// Interface for paginated list
+public interface IPaginatedList<T>
+{
+    int PageIndex { get; }
+    int Count { get; }
+    int TotalPages { get; }
+    bool HasNextPage { get; }
+    bool HasPreviousPage { get; }
+    IEnumerable<int> GetPageList(int count);
+}
+
+
+
+
+
 
 namespace Bookstore.Web.Areas.Admin.Models.Inventory
 {

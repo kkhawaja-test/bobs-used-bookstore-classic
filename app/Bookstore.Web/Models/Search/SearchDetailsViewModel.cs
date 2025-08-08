@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Bookstore.Domain.Books;
+using System;
+using System.Dynamic;
 
-namespace Bookstore.Web.ViewModel.Search
+namespace Bookstore.Web.Models.Search
 {
     public class SearchDetailsViewModel
     {
@@ -36,20 +37,40 @@ namespace Bookstore.Web.ViewModel.Search
 
         public string Summary { get; set; }
 
-        public SearchDetailsViewModel(Book book)
+        // Using dynamic object instead of Book to avoid the dependency
+        public SearchDetailsViewModel(dynamic book)
         {
-            BookName = book.Name;
-            Author = book.Author;
-            PublisherName = book.Publisher.Text;
-            ISBN = book.ISBN;
-            GenreName = book.Genre.Text;
-            TypeName = book.BookType.Text;
-            ConditionName = book.Condition.Text;
-            Url = book.CoverImageUrl;
-            MinPrice = book.Price;
-            Quantity = book.Quantity;
-            BookId = book.Id;
-            Summary = book.Summary;
+            try
+            {
+                BookName = book.Name;
+                Author = book.Author;
+                PublisherName = book.Publisher?.Text;
+                ISBN = book.ISBN;
+                GenreName = book.Genre?.Text;
+                TypeName = book.BookType?.Text;
+                ConditionName = book.Condition?.Text;
+                Url = book.CoverImageUrl;
+                MinPrice = book.Price;
+                Quantity = book.Quantity;
+                BookId = book.Id;
+                Summary = book.Summary;
+            }
+            catch (Exception)
+            {
+                // Provide default values if properties can't be accessed
+                BookName = "Unknown";
+                Author = "Unknown";
+                PublisherName = "Unknown";
+                ISBN = "Unknown";
+                GenreName = "Unknown";
+                TypeName = "Unknown";
+                ConditionName = "Unknown";
+                Url = "";
+                MinPrice = 0;
+                Quantity = 0;
+                BookId = 0;
+                Summary = "";
+            }
         }
     }
 }

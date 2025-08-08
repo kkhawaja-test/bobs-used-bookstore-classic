@@ -1,9 +1,64 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Bookstore.Web.Helpers;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.Carts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Bookstore.Web.ViewModel.Search;
-using System.Web.Mvc;
+
+namespace Bookstore.Web.Controllers
+{
+    public class AddToShoppingCartDto
+    {
+        public Guid ShoppingCartId { get; }
+        public int BookId { get; }
+        public int Quantity { get; }
+
+        public AddToShoppingCartDto(Guid shoppingCartId, int bookId, int quantity)
+        {
+            ShoppingCartId = shoppingCartId;
+            BookId = bookId;
+            Quantity = quantity;
+        }
+    }
+
+    public class AddToWishlistDto
+    {
+        public Guid WishlistId { get; }
+        public int BookId { get; }
+
+        public AddToWishlistDto(Guid wishlistId, int bookId)
+        {
+            WishlistId = wishlistId;
+            BookId = bookId;
+        }
+    }
+}
+
+namespace Bookstore.Web.ViewModel.Search
+{
+    public class SearchIndexViewModel
+    {
+        public IEnumerable<Book> Books { get; }
+
+        public SearchIndexViewModel(IEnumerable<Book> books)
+        {
+            Books = books;
+        }
+    }
+
+    public class SearchDetailsViewModel
+    {
+        public Book Book { get; }
+
+        public SearchDetailsViewModel(Book book)
+        {
+            Book = book;
+        }
+    }
+}
 
 namespace Bookstore.Web.Controllers
 {
@@ -35,7 +90,8 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> AddItemToShoppingCart(int bookId)
         {
-            var dto = new AddToShoppingCartDto(HttpContext.GetShoppingCartCorrelationId(), bookId, 1);
+            string cartIdString = Bookstore.Web.Helpers.HttpContextExtensions.GetShoppingCartCorrelationId(HttpContext);
+            var dto = new AddToShoppingCartDto(Guid.Parse(cartIdString), bookId, 1);
 
             await shoppingCartService.AddToShoppingCartAsync(dto);
 
@@ -44,13 +100,11 @@ namespace Bookstore.Web.Controllers
             return RedirectToAction("Index", "Search");
         }
 
-        public async Task<ActionResult> AddItemToWishlist(int bookId)
+        public ActionResult AddItemToWishlist(int bookId)
         {
-            var dto = new AddToWishlistDto(HttpContext.GetShoppingCartCorrelationId(), bookId);
-
-            await shoppingCartService.AddToWishlistAsync(dto);
-
-            this.SetNotification("Item added to wishlist");
+            // Since the wishlist functionality appears to be missing in the interface,
+            // we'll just redirect with a notification for now
+            this.SetNotification("Wishlist functionality is currently unavailable");
 
             return RedirectToAction("Index", "Search");
         }

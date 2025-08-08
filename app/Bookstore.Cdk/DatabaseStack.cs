@@ -2,11 +2,15 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.RDS;
 using Amazon.CDK.AWS.SSM;
-using Bookstore.Common;
 using Constructs;
 using InstanceType = Amazon.CDK.AWS.EC2.InstanceType;
 
 namespace Bookstore.Cdk;
+
+public static class Constants
+{
+    public const string AppName = "Bookstore";
+}
 
 public class DatabaseStackProps : StackProps
 {

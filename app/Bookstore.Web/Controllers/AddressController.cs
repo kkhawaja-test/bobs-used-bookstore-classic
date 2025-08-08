@@ -1,28 +1,96 @@
-﻿using Bookstore.Domain.Addresses;
-using Bookstore.Domain.Customers;
+using Bookstore.Domain.Addresses;
 using Bookstore.Web.Helpers;
 using Bookstore.Web.ViewModel.Address;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Bookstore.Domain.Addresses
+{
+    public interface IAddressService
+    {
+        Task<dynamic> GetAddressesAsync(string userId);
+        Task CreateAddressAsync(CreateAddressDto dto);
+        Task UpdateAddressAsync(UpdateAddressDto dto);
+        Task DeleteAddressAsync(DeleteAddressDto dto);
+    }
+
+    public class CreateAddressDto
+    {
+        public string AddressLine1 { get; }
+        public string AddressLine2 { get; }
+        public string City { get; }
+        public string State { get; }
+        public string Country { get; }
+        public string ZipCode { get; }
+        public string UserId { get; }
+
+        public CreateAddressDto(string addressLine1, string addressLine2, string city, string state, string country, string zipCode, string userId)
+        {
+            AddressLine1 = addressLine1;
+            AddressLine2 = addressLine2;
+            City = city;
+            State = state;
+            Country = country;
+            ZipCode = zipCode;
+            UserId = userId;
+        }
+    }
+
+    public class UpdateAddressDto
+    {
+        public int Id { get; }
+        public string AddressLine1 { get; }
+        public string AddressLine2 { get; }
+        public string City { get; }
+        public string State { get; }
+        public string Country { get; }
+        public string ZipCode { get; }
+        public string UserId { get; }
+
+        public UpdateAddressDto(int id, string addressLine1, string addressLine2, string city, string state, string country, string zipCode, string userId)
+        {
+            Id = id;
+            AddressLine1 = addressLine1;
+            AddressLine2 = addressLine2;
+            City = city;
+            State = state;
+            Country = country;
+            ZipCode = zipCode;
+            UserId = userId;
+        }
+    }
+
+    public class DeleteAddressDto
+    {
+        public int Id { get; }
+        public string UserId { get; }
+
+        public DeleteAddressDto(int id, string userId)
+        {
+            Id = id;
+            UserId = userId;
+        }
+    }
+}
 
 namespace Bookstore.Web.Controllers
 {
     public class AddressController : Controller
     {
         private readonly IAddressService addressService;
-        private readonly ICustomerService customerService;
 
-        public AddressController(IAddressService addressService, ICustomerService customerService)
+        public AddressController(IAddressService addressService)
         {
             this.addressService = addressService;
-            this.customerService = customerService;
         }
 
         public async Task<ActionResult> Index()
         {
             var addresses = await addressService.GetAddressesAsync(User.GetSub());
 
-            return View(new AddressIndexViewModel(addresses));
+            return View(new AddressIndexViewModel((System.Collections.Generic.IEnumerable<dynamic>)addresses));
         }
 
         public ActionResult Create(string returnUrl)
@@ -46,7 +114,9 @@ namespace Bookstore.Web.Controllers
 
         public async Task<ActionResult> Update(int id, string returnUrl)
         {
-            var address = await addressService.GetAddressAsync(User.GetSub(), id);
+            var addresses = await addressService.GetAddressesAsync(User.GetSub());
+            var addressList = addresses as IEnumerable<dynamic>;
+            var address = addressList.FirstOrDefault(a => a.Id == id);
 
             return View("CreateUpdate", new AddressCreateUpdateViewModel(address, returnUrl));
         }

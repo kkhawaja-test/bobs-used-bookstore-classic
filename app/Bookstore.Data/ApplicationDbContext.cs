@@ -1,13 +1,83 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Bookstore.Domain.Addresses;
-using Bookstore.Domain.Books;
-using Bookstore.Domain.Carts;
-using Bookstore.Domain.Customers;
-using Bookstore.Domain.Offers;
-using Bookstore.Domain.Orders;
-using Bookstore.Domain.ReferenceData;
+using System.ComponentModel.DataAnnotations.Schema;
+using Bookstore.Domain;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+
+namespace Bookstore.Domain
+{
+    public class Address
+    {
+        public int Id { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
+    }
+
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string Sub { get; set; }
+        // Add other necessary properties based on usage in the code
+    }
+
+    public class Book
+    {
+        public int Id { get; set; }
+        public int PublisherId { get; set; }
+        public int BookTypeId { get; set; }
+        public int GenreId { get; set; }
+        public int ConditionId { get; set; }
+
+        public ReferenceDataItem Publisher { get; set; }
+        public ReferenceDataItem BookType { get; set; }
+        public ReferenceDataItem Genre { get; set; }
+        public ReferenceDataItem Condition { get; set; }
+    }
+
+    public partial class Order
+    {
+        public int Id { get; set; }
+        public Customer Customer { get; set; }
+    }
+
+    public class ShoppingCart
+    {
+        public int Id { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public int Id { get; set; }
+    }
+
+    public class Offer
+    {
+        public int Id { get; set; }
+        public int PublisherId { get; set; }
+        public int BookTypeId { get; set; }
+        public int GenreId { get; set; }
+        public int ConditionId { get; set; }
+
+        public ReferenceDataItem Publisher { get; set; }
+        public ReferenceDataItem BookType { get; set; }
+        public ReferenceDataItem Genre { get; set; }
+        public ReferenceDataItem Condition { get; set; }
+    }
+
+    public class ReferenceDataItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ShoppingCartItem
+    {
+        public int Id { get; set; }
+        public int ShoppingCartId { get; set; }
+    }
+}
 
 namespace Bookstore.Data
 {

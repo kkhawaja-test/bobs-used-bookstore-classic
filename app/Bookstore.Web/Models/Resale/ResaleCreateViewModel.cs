@@ -1,7 +1,10 @@
-﻿using Bookstore.Domain.ReferenceData;
+using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+
 
 namespace Bookstore.Web.ViewModel.Resale
 {
@@ -11,10 +14,19 @@ namespace Bookstore.Web.ViewModel.Resale
 
         public ResaleCreateViewModel(IEnumerable<ReferenceDataItem> referenceDataItems)
         {
-            BookTypes = referenceDataItems.Where(x => x.DataType == ReferenceDataType.BookType).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Publishers = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Publisher).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Genres = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Genre).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
-            Conditions = referenceDataItems.Where(x => x.DataType == ReferenceDataType.Condition).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Text });
+            var bookTypeItems = referenceDataItems.Where(x => x.GetType().Name.Contains("BookType") ||
+                (x.GetType().GetProperty("Category")?.GetValue(x)?.ToString() == "BookType")).ToList();
+            var publisherItems = referenceDataItems.Where(x => x.GetType().Name.Contains("Publisher") ||
+                (x.GetType().GetProperty("Category")?.GetValue(x)?.ToString() == "Publisher")).ToList();
+            var genreItems = referenceDataItems.Where(x => x.GetType().Name.Contains("Genre") ||
+                (x.GetType().GetProperty("Category")?.GetValue(x)?.ToString() == "Genre")).ToList();
+            var conditionItems = referenceDataItems.Where(x => x.GetType().Name.Contains("Condition") ||
+                (x.GetType().GetProperty("Category")?.GetValue(x)?.ToString() == "Condition")).ToList();
+
+            BookTypes = bookTypeItems.Select(x => new SelectListItem { Value = x.GetType().GetProperty("Id")?.GetValue(x)?.ToString(), Text = x.GetType().GetProperty("Name")?.GetValue(x)?.ToString() });
+            Publishers = publisherItems.Select(x => new SelectListItem { Value = x.GetType().GetProperty("Id")?.GetValue(x)?.ToString(), Text = x.GetType().GetProperty("Name")?.GetValue(x)?.ToString() });
+            Genres = genreItems.Select(x => new SelectListItem { Value = x.GetType().GetProperty("Id")?.GetValue(x)?.ToString(), Text = x.GetType().GetProperty("Name")?.GetValue(x)?.ToString() });
+            Conditions = conditionItems.Select(x => new SelectListItem { Value = x.GetType().GetProperty("Id")?.GetValue(x)?.ToString(), Text = x.GetType().GetProperty("Name")?.GetValue(x)?.ToString() });
         }
 
         public IEnumerable<SelectListItem> BookTypes { get; internal set; }

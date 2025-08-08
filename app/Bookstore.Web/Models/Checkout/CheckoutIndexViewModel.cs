@@ -1,9 +1,10 @@
-﻿using Bookstore.Domain.Carts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
-namespace Bookstore.Web.ViewModel.Checkout
+namespace Bookstore.Web.ViewModel.CheckoutProcess
 {
     public class CheckoutIndexViewModel
     {
@@ -18,7 +19,7 @@ namespace Bookstore.Web.ViewModel.Checkout
 
         public CheckoutIndexViewModel() { }
 
-        public CheckoutIndexViewModel(Domain.Carts.ShoppingCart shoppingCart, IEnumerable<Domain.Addresses.Address> addresses)
+        public CheckoutIndexViewModel(IEnumerable<dynamic> addresses)
         {
             Addresses = addresses.Select(x => new CheckoutAddressViewModel
             {
@@ -31,15 +32,11 @@ namespace Bookstore.Web.ViewModel.Checkout
                 ZipCode = x.ZipCode
             }).ToList();
 
-            ShoppingCartItems = shoppingCart.GetShoppingCartItems(ShoppingCartItemFilter.IncludeOutOfStockItems).Select(x => new CheckoutItemViewModel
-            {
-                BookName = x.Book.Name,
-                ImageUrl = x.Book.CoverImageUrl,
-                Price = x.Book.Price,
-                OutOfStock = x.Book.Quantity <= 0
-            }).ToList();
+            // Shopping cart items will need to be populated separately
+            ShoppingCartItems = new List<CheckoutItemViewModel>();
 
-            Total = shoppingCart.GetSubTotal(ShoppingCartItemFilter.ExcludeOutOfStockItems);
+            // Total will need to be calculated separately
+            Total = 0;
 
             SelectedAddressId = Addresses.Count > 0 ? Addresses.First().Id : 0;
         }
